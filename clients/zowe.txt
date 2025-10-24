@@ -1,0 +1,9 @@
+-- Run in ZOWE-CLI:
+-- Using Execute SQL
+-- RTFM: https://docs.zowe.org/v3.0.x/web_help/docs/zowe_db2_execute_sql
+zowe db2 execute sql --query "select text from table(idug.reorgtb('IDUG', 'PROCPROT'))"
+
+-- Using Call Procedure
+-- RTFM: https://docs.zowe.org/v3.0.x/web_help/docs/zowe_db2_call_procedure
+zowe db2 call procedure "IDUG.REORGTB('IDUG', 'PROCPROT', ?, ?)" --parameters "00" "placeholder"
+

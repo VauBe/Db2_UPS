@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <title> DBA Sample App </title>
+    </head>
+
+    <body>
+        <form class="form">
+            <input name="dbname"  type="text" placeholder="DBNAME">
+            <input name="tsname"  type="text" placeholder="TSNAME">
+            <p></p>
+            <input name="username" type="text" placeholder="user">
+            <input name="password" type="password" placeholder="RACF-PW">
+            <p></p>
+            <input type="radio" id="reorg" name="ts_task" value="reorg">
+            <label for="reorg">REORG</label><br>
+            <input type="radio" id="quiesce" name="ts_task" value="quiesce">
+            <label for="quiesce">QUIESCE</label><br>
+            <p></p>
+            <input type="submit" value="Do it!">
+            
+        </form>
+        <br><br><br><p>Result</p>
+        <textarea id="result" name="result" rows="2" cols="20">Result</textarea>
+        <textarea id="output" name="output" rows="8" cols="80">Output</textarea>
+
+        <script>
+            const formEl = document.querySelector('.form');
+            formEl.addEventListener('submit', event => {
+                event.preventDefault();
+
+                const formData = new FormData(formEl);
+                const fkt = formData.get('ts_task');
+                
+                fetch('/db2/' + fkt, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(Object.fromEntries(formData))
+                }).then(res => res.json())
+                  .then(data => {
+                    const erg = JSON.parse(data[0]['response']);
+                    let text = "";
+
+                    document.getElementById('result').value = JSON.stringify(erg["Output Parameters"]);
+                   
+                    liste = erg["ResultSet 1 Output"];
+                    liste.forEach((element, index) => {
+                        console.log(element["TEXT"]);
+                        console.log(typeof(element));
+                        console.log(typeof(element["TEXT"]));
+                        console.log(typeof(JSON.stringify(element["TEXT"])));
+                        console.log(typeof(text));
+
+                        text += JSON.stringify(element["TEXT"]);
+                        if (index < liste.length - 1) {
+                            text += "\n";
+                        }
+
+                    });
+                    document.getElementById('output').value = text;
+
+                    console.log(erg["Output Parameters"]);
+                    //console.log(erg[0]);
+
+                })
+                  .catch(error => {
+                    console.log(error);
+                    document.getElementById('result').value = error;
+
+                });
+
+                  
+            });
+        </script>
+    </body>
+</html>

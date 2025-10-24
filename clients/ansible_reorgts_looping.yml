@@ -1,0 +1,38 @@
+---
+- hosts: localhost
+  gather_facts: no
+
+  vars_prompt:
+    - name: userid
+      prompt: Please enter your RACF-USERID
+      private: false
+    - name: pwd
+      prompt: Please enter your RACF-PW
+      private: true
+
+  tasks:
+    - name: Reorg Tablespace
+      ansible.builtin.uri:
+        url: https://<db2-ip>:<db2-port>/services/IDUGSVC/REORGTS
+        password: "{{pwd}}"
+        user: "{{userid}}"
+        force_basic_auth: true
+        method: POST 
+        body_format: json
+        status_code: 200
+        return_content: yes
+        headers:
+          Accept: application/json
+        body: 
+          I_DBNAME: "{{ item.dbname }}"
+          I_TSNAME: "{{ item.tsname }}"
+          RETCODE: ''
+          LFDNR: ''
+      loop:
+        - { dbname: 'DBIDUG', tsname: 'TSIDUG01'}
+        - { dbname: 'DBIDUG', tsname: 'TSIDUG02'}
+      register: joblog
+    - name: Print joblog
+      debug:
+        msg: "Ausgabe Joblog.results"
+      loop: "{{ joblog.results }}"
