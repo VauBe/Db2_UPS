@@ -1,4 +1,7 @@
 # IBM Db2 Utility on Table Level Per Select and REST-Service
+## What's new
+2025.12.19 Procedures and Functions for STARTTB, STARTTS, STOPTB, STOPTS added (`/UPS_Install/UPS_04_START.SQL`, `/UPS_Install/UPS_04_STOP.SQL`)
+
 ## What and Why
 While Applications and Developers think of Tables, Db2 z/OS and its Utilities use Tablespaces. At the latest when Developers issue an ALTER TABLE, the corresponding TABLESPACE should be REORGED.
 
@@ -31,6 +34,8 @@ Following "Utilities" are implemented
 * QUIESCE
 * REORG
 * RUNSTATS
+* START
+* STOP
 
 Each Utility is available on Table (TB) and Tablespace (TS) Level via SQL Function and REST-Endpoint.
 
